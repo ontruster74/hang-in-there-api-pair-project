@@ -8,7 +8,7 @@ class Api::V1::PostersController < ApplicationController
   end
 
   def create
-    render json: Poster.create(task_params)
+    render json: Poster.create(poster_params)
   end
 
   def update
