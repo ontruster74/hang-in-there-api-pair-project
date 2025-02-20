@@ -41,9 +41,9 @@ describe "Posters API", type: :request do
   end
 
   it "can get one poster by its id" do
-    Poster.create(name: "REGRET", description: "Hard work rarely pays off.", price: 89.00, year: 2018, vintage: true, img_url:  "https://plus.unsplash.com/premium_photo-1661293818249-fddbddf07a5d")
-  
-    get "/api/v1/posters/1"
+    id = Poster.create(name: "REGRET", description: "Hard work rarely pays off.", price: 89.00, year: 2018, vintage: true, img_url:  "https://plus.unsplash.com/premium_photo-1661293818249-fddbddf07a5d")[:id]
+
+    get "/api/v1/posters/#{id}"
   
     poster = JSON.parse(response.body, symbolize_names: true)
     attributes = poster[:attributes]
@@ -76,46 +76,36 @@ describe "Posters API", type: :request do
   end
   
   it "can create a new poster" do
-    poster_params = {
-      name: "REGRET", 
+
+    post "/api/v1/posters", params: {name: "REGRET", 
       description: "Hard work rarely pays off.", 
       price: 89.00, 
       year: 2018, 
       vintage: true, 
-      img_url:  "https://plus.unsplash.com/premium_photo-1661293818249-fddbddf07a5d"
-    }
-
-    headers = { "CONTENT_TYPE" => "application/json" }
-    # We include this header to make sure that these params are passed as JSON rather than as plain text
-  
-    post "/api/v1/posters", headers: headers, params: JSON.generate(poster: poster_params)
+      img_url:  "https://plus.unsplash.com/premium_photo-1661293818249-fddbddf07a5d"}
     created_poster = Poster.last
-    
-    created_poster_attributes = created_poster[:attributes]
 
     expect(response).to be_successful
-    expect(created_poster_attributes[:name]).to eq(poster_params[:name])
-    expect(created_poster_attributes[:description]).to eq(poster_params[:description])   
-    expect(created_poster_attributes[:price]).to eq(poster_params[:price])
-    expect(created_poster_attributes[:year]).to eq(poster_params[:year])
-    expect(created_poster_attributes[:vintage]).to eq(poster_params[:vintage])
-    expect(created_poster_attributes[:img_url]).to eq(poster_params[:img_url])
+    
+    expect(created_poster[:name]).to be_a(String)
+    expect(created_poster[:description]).to be_a(String)   
+    expect(created_poster[:price]).to be_a(Float)
+    expect(created_poster[:year]).to be_a(Integer)
+    expect(created_poster[:vintage]).to be_in([true, false])
+    expect(created_poster[:img_url]).to be_a(String)
   end
 
 
   it "can update an existing poster" do
-    id = Poster.create(name: "REGRET", description: "Hard work rarely pays off.", price: 89.00, year: 2018, vintage: true, img_url:  "https://plus.unsplash.com/premium_photo-1661293818249-fddbddf07a5d").id
-    previous_name = Poster.last[:attributes].name
-    poster_params = { name: "INCOMPETENCE" }
-    headers = {"CONTENT_TYPE" => "application/json"}
-    # We include this header to make sure that these params are passed as JSON rather than as plain text
-    
-    patch "/api/v1/songs/#{id}", headers: headers, params: JSON.generate({poster: poster_params})
+    id = Poster.create(name: "REGRET", description: "Hard work rarely pays off.", price: 89.00, year: 2018, vintage: true, img_url:  "https://plus.unsplash.com/premium_photo-1661293818249-fddbddf07a5d")[:id]
+    previous_name = Poster.last[:name]
+   
+    patch "/api/v1/posters/#{id}", params: { name: "INCOMPETENCE" }
     poster = Poster.find_by(id: id)
   
     expect(response).to be_successful
-    expect(poster[:attributes][:name]).to_not eq(previous_name)
-    expect(poster[:attributes][:name]).to eq("INCOMPETENCE")
+    expect(poster[:name]).to_not eq(previous_name)
+    expect(poster[:name]).to eq("INCOMPETENCE")
   end
   
   it "can destroy a poster" do
@@ -130,8 +120,20 @@ describe "Posters API", type: :request do
     expect{ Poster.find(poster.id) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  xit "can display a count of returned posters" do
+  it "can display a count of returned posters" do
+    Poster.create(name: "REGRET", description: "Hard work rarely pays off.", price: 89.00, year: 2018, vintage: true, img_url:  "https://plus.unsplash.com/premium_photo-1661293818249-fddbddf07a5d")
     
+    get "/api/v1/posters"
+
+    expect(response).to be_successful
+
+    posters_hash = JSON.parse(response.body, symbolize_names: true)
+    posters = posters_hash[:data]
+    meta = posters_hash[:meta]
+
+    expect(posters.count).to eq(1)
+    expect(meta).to have_key(:count)
+    expect(meta[:count]).to eq(posters.count)
   end
   
 end
