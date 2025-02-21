@@ -138,11 +138,29 @@ describe "Posters API", type: :request do
   
 
   it "can sort returned posters in ascending order" do
-    
+    Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
+    Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
+    Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
+
+    get "/api/v1/posters", params: { sort: 'asc' }
+
+    expect(response).to be_successful
+
+    posters = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(posters.map { |poster| poster[:attributes][:price] }).to eq([10.0, 15.0, 20.0])
   end
 
   it "can sort returned posters in descending order" do
-    
+    Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
+    Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
+    Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
+
+    get "/api/v1/posters", params: { sort: 'desc' }
+
+    expect(response).to be_successful
+
+    posters = JSON.parse(response.body, symbolize_names: true)[:data]
+    expect(posters.map { |poster| poster[:attributes][:price] }).to eq([20.0, 15.0, 10.0])
   end
 
   it "can filter returned posters by name" do
