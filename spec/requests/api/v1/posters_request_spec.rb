@@ -136,4 +136,24 @@ describe "Posters API", type: :request do
     expect(meta[:count]).to eq(posters.count)
   end
   
+
+  it "can sort returned posters in ascending order" do
+    
+  end
+
+  it "can sort returned posters in descending order" do
+    
+  end
+
+  it "can filter returned posters by name" do
+    
+  end
+
+  it "can filter returned posters by minimum price" do
+    
+  end
+
+  it "can filter returned posters by maximum price" do
+    
+  end
 end
