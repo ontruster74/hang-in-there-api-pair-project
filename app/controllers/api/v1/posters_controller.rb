@@ -1,14 +1,17 @@
 class Api::V1::PostersController < ApplicationController
   def index
-    render json: Poster.all
+    posters = Poster.all.sort_asc(params[:sort]).sort_dsc(params[:sort]).filter_by_name(params[:name]).filter_by_min_price(params[:min_price]).filter_by_max_price(params[:max_price])
+
+    render json: PosterSerializer.format_posters(posters)
   end
 
   def show
-    render json: Poster.find(params[:id])
+    poster = Poster.find(params[:id])
+    render json: PosterSerializer.format_poster(poster)
   end
 
   def create
-    render json: Poster.create(task_params)
+    render json: Poster.create(poster_params)
   end
 
   def update
@@ -22,6 +25,6 @@ class Api::V1::PostersController < ApplicationController
   private
 
   def poster_params
-    params.require(:name, :description, :price, :year, :vintage, :img_url)
+    params.permit(:name, :description, :price, :year, :vintage, :img_url)
   end
 end
