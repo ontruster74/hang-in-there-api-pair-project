@@ -7,6 +7,8 @@ Donte Handy - GitHub Profile: https://github.com/dontehandy
 
 Rig Freyr - GitHub Profile: https://github.com/ontruster74
 
+DTR Agreement Link: https://docs.google.com/document/d/1SVp6I34-lScHpxORXTvBHVZZdTMRj5deEuFtSLoVIvA/edit?usp=sharing
+
 ### SETUP
 ---------------------------------
 
