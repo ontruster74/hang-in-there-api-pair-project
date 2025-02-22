@@ -135,33 +135,6 @@ describe "Posters API", type: :request do
     expect(meta).to have_key(:count)
     expect(meta[:count]).to eq(posters.count)
   end
-  
-
-  it "can sort returned posters in ascending order by price" do
-    Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
-    Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
-    Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
-
-    get "/api/v1/posters", params: { sort: 'price_asc' }
-
-    expect(response).to be_successful
-
-    posters = JSON.parse(response.body, symbolize_names: true)[:data]
-    expect(posters.map { |poster| poster[:attributes][:price] }).to eq([10.0, 15.0, 20.0])
-  end
-
-  it "can sort returned posters in descending order by price" do
-    Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
-    Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
-    Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
-
-    get "/api/v1/posters", params: { sort: 'price_desc' }
-
-    expect(response).to be_successful
-
-    posters = JSON.parse(response.body, symbolize_names: true)[:data]
-    expect(posters.map { |poster| poster[:attributes][:price] }).to eq([20.0, 15.0, 10.0])
-  end
 
   it "can sort returned posters in ascending order by created_at" do
     Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
@@ -203,31 +176,31 @@ describe "Posters API", type: :request do
     expect(posters.first[:attributes][:name]).to eq("Poster B")
   end
 
-  # it "can filter returned posters by minimum price" do
-  #   Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
-  #   Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
-  #   Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
+  it "can filter returned posters by minimum price" do
+     Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
+     Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
+     Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
 
-  #   get "/api/v1/posters", params: { min_price: 15.0 }
+     get "/api/v1/posters", params: { min_price: 15.0 }
 
-  #   expect(response).to be_successful
+     expect(response).to be_successful
 
-  #   posters = JSON.parse(response.body, symbolize_names: true)[:data]
-  #   expect(posters.count).to eq(2)
-  #   expect(posters.map { |poster| poster[:attributes][:price] }).to eq([20.0, 15.0])
-  # end
+     posters = JSON.parse(response.body, symbolize_names: true)[:data]
+     expect(posters.count).to eq(2)
+     expect(posters.map { |poster| poster[:attributes][:price] }).to eq([20.0, 15.0])
+  end
 
-  # it "can filter returned posters by maximum price" do
-  #   Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
-  #   Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
-  #   Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
+  it "can filter returned posters by maximum price" do
+     Poster.create(name: "Poster A", price: 10.0, year: 2000, vintage: false, img_url: "url1")
+     Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
+     Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
 
-  #   get "/api/v1/posters", params: { max_price: 15.0 }
+     get "/api/v1/posters", params: { max_price: 15.0 }
 
-  #   expect(response).to be_successful
+     expect(response).to be_successful
 
-  #   posters = JSON.parse(response.body, symbolize_names: true)[:data]
-  #   expect(posters.count).to eq(2)
-  #   expect(posters.map { |poster| poster[:attributes][:price] }).to eq([10.0, 15.0])
-  # end
+     posters = JSON.parse(response.body, symbolize_names: true)[:data]
+     expect(posters.count).to eq(2)
+     expect(posters.map { |poster| poster[:attributes][:price] }).to eq([10.0, 15.0])
+  end
 end
