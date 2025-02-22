@@ -1,10 +1,6 @@
 class Api::V1::PostersController < ApplicationController
   def index
-    posters = Poster.all
-    posters = posters.sort_by_created_at_asc if params[:sort] == 'created_at_asc'
-    posters = posters.sort_by_created_at_desc if params[:sort] == 'created_at_desc'
-    posters = posters.filter_by_name(params[:name]).filter_by_min_price(params[:min_price]).filter_by_max_price(params[:max_price])
-
+    posters = Poster.all.sort_asc(params[:sort]).sort_dsc(params[:sort]).filter_by_name(params[:name]).filter_by_min_price(params[:min_price]).filter_by_max_price(params[:max_price])
     render json: PosterSerializer.format_posters(posters)
   end
 

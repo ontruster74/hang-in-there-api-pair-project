@@ -141,7 +141,7 @@ describe "Posters API", type: :request do
     Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
     Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
 
-    get "/api/v1/posters", params: { sort: 'created_at_asc' }
+    get "/api/v1/posters", params: { sort: 'asc' }
 
     expect(response).to be_successful
 
@@ -154,7 +154,7 @@ describe "Posters API", type: :request do
     Poster.create(name: "Poster B", price: 20.0, year: 1990, vintage: true, img_url: "url2")
     Poster.create(name: "Poster C", price: 15.0, year: 2010, vintage: false, img_url: "url3")
 
-    get "/api/v1/posters", params: { sort: 'created_at_desc' }
+    get "/api/v1/posters", params: { sort: 'desc' }
 
     expect(response).to be_successful
 
